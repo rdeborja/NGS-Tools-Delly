@@ -14,7 +14,7 @@ my $builder = Module::Build->new(
         'Module::Build' => 0,
     },
     build_requires => {
-        'Test::More'                        => 0,
+        'Test::More'                => 0,
 				'MooseX::ClassCompositor'   => 0,
 				'Test::Moose'               => 0,
 				'Test::Exception'           => 0,
@@ -22,12 +22,12 @@ my $builder = Module::Build->new(
 				'Data::Dumper'              => 0
     },
     requires => {
-			  'Moose'                       => 0,
+			  'Moose'                     => 0,
 				'MooseX::Params::Validate'  => 0,
 				'Carp'                      => 0,
 				'File::Basename'            => 0,
-                'Getopt::Long'              => 0,
-                'Pod::Usage'                => 0
+        'Getopt::Long'              => 0,
+        'Pod::Usage'                => 0
     },
     add_to_cleanup     => [ 'NGS-Tools-Delly-*' ],
     create_makefile_pl => 'traditional',

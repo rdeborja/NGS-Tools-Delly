@@ -9,3 +9,5 @@ README
 t/01-tra_role.t
 t/example/normal.bam
 t/example/tumour.bam
+META.yml
+META.json

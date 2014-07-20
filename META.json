@@ -1,0 +1,62 @@
+{
+   "abstract" : "Delly Genomic Rearrangements Perl API",
+   "author" : [
+      "Richard de Borja <richard.deborja@sickkids.ca>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4205",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "NGS-Tools-Delly",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Data::Dumper" : "0",
+            "MooseX::ClassCompositor" : "0",
+            "Test::Exception" : "0",
+            "Test::Files" : "0",
+            "Test::Moose" : "0",
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "0",
+            "File::Basename" : "0",
+            "Getopt::Long" : "0",
+            "Moose" : "0",
+            "MooseX::Params::Validate" : "0",
+            "Pod::Usage" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "NGS::Tools::Delly" : {
+         "file" : "lib/NGS/Tools/Delly.pm",
+         "version" : "0.01"
+      },
+      "NGS::Tools::Delly::Roles::Base" : {
+         "file" : "lib/NGS/Tools/Delly/Roles/Base.pm"
+      },
+      "NGS::Tools::Delly::Roles::Translocations" : {
+         "file" : "lib/NGS/Tools/Delly/Roles/Translocations.pm"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://www.perlfoundation.org/artistic_license_2_0"
+      ]
+   },
+   "version" : "0.01"
+}
