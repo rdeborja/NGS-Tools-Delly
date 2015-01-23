@@ -2,12 +2,15 @@ Build.PL
 Changes
 lib/NGS/Tools/Delly.pm
 lib/NGS/Tools/Delly/Roles/Base.pm
+lib/NGS/Tools/Delly/Roles/Deletions.pm
+lib/NGS/Tools/Delly/Roles/PostProcess.pm
 lib/NGS/Tools/Delly/Roles/Translocations.pm
 Makefile.PL
 MANIFEST			This list of files
+META.json
+META.yml
 README
 t/01-tra_role.t
+t/02-del_role.t
 t/example/normal.bam
 t/example/tumour.bam
-META.yml
-META.json

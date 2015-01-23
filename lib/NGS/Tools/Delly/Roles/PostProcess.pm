@@ -1,67 +1,133 @@
-package NGS::Tools::Delly;
-use Moose;
+package NGS::Tools::Delly::Roles::PostProcess;
+use Moose::Role;
 use MooseX::Params::Validate;
-
-with 'NGS::Tools::Delly::Roles::Base';
-with 'NGS::Tools::Delly::Roles::Translocations';
-with 'NGS::Tools::Delly::Roles::Deletions';
-with 'NGS::Tools::Delly::Roles::PostProcess';
 
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
+use File::Basename;
+use Vcf;
 
 =head1 NAME
 
-NGS::Tools::Delly
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
+NGS::Tools::Delly::Roles::PostProcess
 
 =head1 SYNOPSIS
 
-A Perl Moose class for the Delly structural rearrangement caller.
-
-	use NGS::Tools::Delly;
-
-	my $obj = NGS::Tools::Delly->new();
-
-	...
+A suite of tools for postprocessing the Delly output.
 
 =head1 ATTRIBUTES AND DELEGATES
 
-=cut
-
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->BUILD()
+=head2 $obj->convert_delly_features_to_circos()
 
-Post-constructor initialization (called automatically as part of new())
+Convert the Delly features file to a Circos link compatable output format.
 
 =head3 Arguments:
 
 =over 2
 
-=item * $args: reference to hash of arguments
+=item * file: name of file to process
 
 =back
 
 =cut
 
-sub BUILD {
+sub convert_delly_features_to_circos {
 	my $self = shift;
-	my $args = shift;
+	my %args = validated_hash(
+		\@_,
+		file => {
+			isa         => 'Str',
+			required    => 1
+			},
+		offset => {
+			isa			=> 'Int',
+			required	=> 0,
+			default		=> 100
+			}
+		);
+
+	# declare a few variables
+	my $id = 0;
+	my $id_prefix = 'tx';
+
+	# create the output filename
+	my $output = join('.',
+		File::Basename($args{'file'}, qw( .txt )),
+		'circos',
+		'dat'
+		);
+
+
+	# loop through the file and start processing the structural variations
+	# one at a time
+	open(my $ifh, '<', $args{'file'});
+	while(my $line = <$ifh>) {
+		$line =~ s/^\s+//;
+		$line =~ s/\s+$//;
+
+		# ship the header line
+		next if ($line =~ m/^CHROM/);
+		my @input = split(/\t/, $line);
+		
+		}
+
+	my %return_values = (
+		output => $output
+		);
+
+	return(\%return_values);
+	}
+
+=head2 $obj->call_somatic_events()
+
+A method for calling somatic events between tumour and normal VCF files from Delly.
+
+=head3 Arguments:
+
+=over 2
+
+=item * tumour: full path to the tumour VCF file from Delly
+
+=item * normal: full path to the normal VCF file from Delly
+
+=back
+
+=cut
+
+sub call_somatic_events {
+	my $self = shift;
+	my %args = validated_hash(
+		\@_,
+		tumour => {
+			isa         => 'Str',
+			required    => 1
+			},
+		normal => {
+			isa			=> 'Str',
+			required	=> 1
+			}
+		);
+
+	my $somatic_output;
+
+
+
+	return($somatic_output);
 	}
 
 =head1 AUTHOR
 
 Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
+
+=head1 ACKNOWLEDGEMENT
+
+Dr. Adam Shlien, PI -- The Hospital for Sick Children
+
+Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
@@ -73,7 +139,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::Delly
+    perldoc NGS::Tools::Delly::Roles::PostProcess
 
 You can also look for information at:
 
@@ -141,8 +207,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-no Moose;
+no Moose::Role;
 
-__PACKAGE__->meta->make_immutable;
-
-1; # End of NGS::Tools::Delly
+1; # End of NGS::Tools::Delly::Roles::PostProcess

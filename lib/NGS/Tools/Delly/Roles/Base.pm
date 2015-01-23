@@ -2,6 +2,9 @@ package NGS::Tools::Delly::Roles::Base;
 use Moose::Role;
 use MooseX::Params::Validate;
 
+with 'NGS::Tools::Delly::Roles::Translocations';
+with 'NGS::Tools::Delly::Roles::Deletions';
+
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;

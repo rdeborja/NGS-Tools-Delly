@@ -1,15 +1,12 @@
-package NGS::Tools::Delly::Roles::Translocations;
+package NGS::Tools::Delly::Roles::Deletions;
 use Moose::Role;
 use MooseX::Params::Validate;
-
-with 'NGS::Tools::Delly::Roles::Base';
 
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
 use File::Basename;
-use Carp;
 
 =head1 NAME
 
@@ -17,129 +14,16 @@ NGS::Tools::Delly::Roles::Translocations
 
 =head1 SYNOPSIS
 
-A Perl Moose role for wrapping Delly translocation calling and processing methods.
+A Perl Moose role for wrapping the structural rearrangement program Delly for deletion
+events in next generation sequencing data.
 
 =head1 ATTRIBUTES AND DELEGATES
 
-
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->process_translocations
+=head2 $obj->run_deletion_caller()
 
-Run the translocation event caller.
-
-=head3 Arguments:
-
-=over 2
-
-=item * bam: BAM file to run analysis on
-
-=back
-
-=cut
-
-sub process_translocations {
-    my $self = shift;
-    my %args = validated_hash(
-        \@_,
-        tumour => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_tumour()
-            },
-        normal => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_normal()
-            },
-        reference => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_reference()
-            },
-        output => {
-            isa         => 'Str',
-            required    => 0,
-            default     => ''
-            },
-        exclude => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_exclude()
-            },
-        delly => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_delly()
-            }
-        );
-
-
-    # by default, use the input file with appended tags for the output file
-    my $output;
-    if ($args{'output'} eq '') {
-        $output = join('.',
-            basename($args{'tumour'}, qw( .bam )),
-            'tx',
-            'vcf'
-            );
-        }
-    elsif ($args{'output'} ne '' && $args{'output'} =~ m/vcf$/) {
-        $output = $args{'output'};
-        }
-    else {
-        Carp::croak("Invalid output filename provided.  Exiting...")
-        }
-
-    my $program = join(' ',
-        $args{'delly'},
-        '-t',
-        'TRA'
-        );
-
-    my $options = join(' ',
-        '-o', $output,
-        '-g', $args{'reference'}
-        );
-
-    if ($args{'exclude'} ne '') {
-        $options = join(' ',
-            $options,
-            '-x',
-            $args{'exclude'}
-            );
-        }
-
-    if ($args{'normal'} ne '') {
-        $options = join(' ',
-            $options,
-            $args{'tumour'},
-            $args{'normal'}
-            );
-        }
-    else {
-        $options = join(' ',
-            $options,
-            $args{'tumour'}
-            );
-        }
-
-    my $cmd = join(' ',
-        $program,
-        $options
-        );
-
-    my %return_values = (
-        cmd => $cmd,
-        output => $output
-        );
-
-    return(\%return_values);
-    }
-
-=head2 $obj->run_translocation_caller()
-
-Run Delly's translocation (TRA) caller.
+Run Delly's deletion (DEL) caller.
 
 =head3 Arguments:
 
@@ -151,7 +35,7 @@ Run Delly's translocation (TRA) caller.
 
 =cut
 
-sub run_translocation_caller {
+sub run_deletion_caller {
     my $self = shift;
     my %args = validated_hash(
         \@_,
@@ -162,7 +46,7 @@ sub run_translocation_caller {
         reference => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_reference()
+            default     => ''
             },
         output => {
             isa         => 'Str',
@@ -172,12 +56,12 @@ sub run_translocation_caller {
         exclude => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_exclude()
+            default     => ''
             },
         delly => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_delly()
+            default     => 'delly'
             }
         );
 
@@ -186,8 +70,8 @@ sub run_translocation_caller {
     my $output;
     if ($args{'output'} eq '') {
         $output = join('.',
-            basename($args{'tumour'}, qw( .bam )),
-            'tx',
+            basename($args{'bam'}, qw( .bam )),
+            'del',
             'vcf'
             );
         }
@@ -201,7 +85,7 @@ sub run_translocation_caller {
     my $program = join(' ',
         $args{'delly'},
         '-t',
-        'TRA'
+        'DEL'
         );
 
     my $options = join(' ',
@@ -243,8 +127,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
 
-Dr. Roland Arnold -- The Hospital for Sick Children
-
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-test-test at rt.cpan.org>, or through
@@ -283,7 +165,7 @@ L<http://search.cpan.org/dist/test-test/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2014 Richard de Borja.
+Copyright 2013 Richard de Borja.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
